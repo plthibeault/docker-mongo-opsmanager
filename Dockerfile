@@ -50,11 +50,14 @@ RUN yum install -y python-setuptools \
     && ln -s /opt/mongodb/mms-backup-daemon/logs /root/blogs  \
     && ln -s /data/appdb/mongodb.log /root/applog \
     && ln -s /data/backupdb/mongodb.log /root/backuplog \
-    && yum clean all
+    && rpm -ivh http://fr2.rpmfind.net/linux/dag/redhat/el6/en/x86_64/dag/RPMS/htop-0.8.3-1.el6.rf.x86_64.rpm && yum clean all
 
 EXPOSE ${OPSMANAGER_CENTRALURLPORT}/tcp ${OPSMANAGER_BACKUPURLPORT}/tcp
 VOLUME [${OPSMANAGER_APPLOG}, ${OPSMANAGER_BACKUPLOG}]
 
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY entrypoint.sh /sbin/entrypoint.sh
+RUN chmod 755 /sbin/entrypoint.sh
 COPY startup.sh /startup.sh
 RUN chmod 755 startup.sh
 
